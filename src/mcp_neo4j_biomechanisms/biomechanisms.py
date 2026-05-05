@@ -416,18 +416,13 @@ class Neo4jBiomechanisms:
             # Validate against schema
             cleaned = validate_entity(node_type, properties)
 
-            # Build SET clauses for optional properties beyond name/description
+            # Build SET clauses dynamically — only set what the caller actually
+            # provided, so MERGE-on-existing doesn't wipe absent fields.
             set_clauses = []
             params: dict[str, Any] = {"name": cleaned["name"]}
 
-            # Description — might be optional for some types (Patient)
-            if "description" in cleaned:
-                params["description"] = cleaned["description"]
-            else:
-                params["description"] = ""
-
             for key, value in cleaned.items():
-                if key in ("name", "description"):
+                if key == "name":
                     continue
                 if key == "t_valid":
                     set_clauses.append(f"SET n.t_valid = datetime(${key})")

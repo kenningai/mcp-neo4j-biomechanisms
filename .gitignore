@@ -8,6 +8,7 @@ __pycache__/
 dist/
 build/
 .eggs/
+.env.*
 
 # Virtual environments
 .venv/
@@ -30,4 +31,11 @@ htmlcov/
 Thumbs.db
 
 # uv
-uv.lock
+# uv.lock
+
+# AI
+CLAUDE.md
+.claude/
+
+# Version control
+.jj/

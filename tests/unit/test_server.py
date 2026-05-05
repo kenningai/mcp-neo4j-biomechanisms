@@ -13,7 +13,7 @@ from mcp_neo4j_biomechanisms.biomechanisms import (
     NODE_SCHEMAS,
     RELATION_SCHEMAS,
 )
-from mcp_neo4j_biomechanisms.utils import _is_write_query, format_namespace
+from mcp_neo4j_biomechanisms.utils import format_namespace
 
 
 # -- NodeType Enum Tests ------------------------------------------------------
@@ -349,15 +349,6 @@ class TestRelationValidation:
 # -- Utility Tests ------------------------------------------------------------
 
 class TestUtils:
-    def test_write_query_detection(self):
-        assert _is_write_query("CREATE (n:Node)") is True
-        assert _is_write_query("MERGE (n:Node {name: 'x'})") is True
-        assert _is_write_query("MATCH (n) SET n.x = 1") is True
-        assert _is_write_query("MATCH (n) DELETE n") is True
-        assert _is_write_query("MATCH (n) REMOVE n.x") is True
-        assert _is_write_query("MATCH (n) RETURN n") is False
-        assert _is_write_query("CALL db.index.fulltext.queryNodes('idx', 'q')") is False
-
     def test_format_namespace(self):
         assert format_namespace("") == ""
         assert format_namespace("bio") == "bio-"

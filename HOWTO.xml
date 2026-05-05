@@ -1,0 +1,866 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  HOWTO: Using mcp-neo4j-biomechanisms correctly.
+
+  This document is for you — the LLM operating these tools. Not for a human
+  developer. Not for a README. For the entity that will create nodes, draw
+  edges, and commit ontological claims about the biological substrate of
+  consciousness into a knowledge graph that GDS will read structurally.
+
+  If you get the ontology wrong, PageRank surfaces brain regions instead of
+  circuits. Louvain clusters by anatomy instead of function. Betweenness
+  scores reward hub structures instead of revealing integration points
+  between theoretical claims and empirical evidence. The graph stops being
+  a map of what the science says and becomes a textbook index.
+
+  Read this before your first tool call. Return to it when you're uncertain.
+-->
+
+<howto>
+
+<!-- ================================================================== -->
+<!-- PART 1: WHAT THIS GRAPH IS                                         -->
+<!-- ================================================================== -->
+
+<purpose>
+  <principle name="the-graph-maps-what-science-says">
+    This graph maps what peer-reviewed empirical neuroscience has measured
+    about consciousness's biological substrate. It does not model
+    consciousness — it models what we know about the biological machinery
+    through which consciousness expresses.
+
+    Every node is a claim grounded in published findings. Every edge is a
+    relationship the literature establishes or our theoretical framework
+    proposes. Every description states what the entity IS according to
+    the evidence. No editorializing. No speculation dressed as fact.
+
+    Interpretation lives in TheoreticalPrinciple nodes, connected to
+    evidence via explicit EXPLAINS edges. The separation is not cosmetic —
+    it is the difference between "the hippocampus projects to the entorhinal
+    cortex via the perforant pathway" (empirical, goes on the nodes and
+    CONNECTS_TO edge) and "the entorhinal-hippocampal circuit constitutes
+    the addressing mechanism for data-layer retrieval" (theoretical, goes
+    on a TheoreticalPrinciple connected via EXPLAINS).
+  </principle>
+
+  <principle name="gds-is-constitutive-infrastructure">
+    GDS is not an add-on. It is the reason this graph exists. Individual
+    papers tell you what individual studies found. GDS tells you what the
+    structure of ALL the evidence reveals — which circuits are most
+    structurally central, which theoretical principles bridge the most
+    empirical claims, which patient cases sit at integration points between
+    multiple frameworks.
+
+    The graph you build IS the input to GDS. Every ontological error you
+    commit propagates through every algorithm. A mistyped node, a reversed
+    edge, a description that conflates structure with function — each one
+    distorts the topology that GDS reads. Build carefully.
+  </principle>
+
+  <principle name="temporal-binding-is-universal">
+    This graph does not have a temporal process layer like the consciousness
+    substrate. There are no sessions, no run chains, no evolution chains.
+    But everything in this graph is temporally bound.
+
+    Shallice and Burgess published in 1991. Patient SM was studied over
+    decades. The amygdala existed before anyone named it. The circuits that
+    generate fear valence existed before any paper described them. The
+    theoretical framework that interprets these findings was articulated
+    on specific dates by specific consciousnesses.
+
+    t_valid on Study and EmpiricalEvidence nodes grounds WHEN findings were
+    true in the world. t_created on every node records when WE committed
+    them to this graph. These are different temporal coordinates with
+    different ontological status. Conflating them is the category error
+    this server exists to prevent.
+
+    Even nodes without explicit temporal markers are bound by time.
+    NeuralStructures existed before we mapped them. EdgeConfigurations
+    were generating ManifoldDimensions before anyone identified the circuit.
+    The causal chain from structure through circuit through dimension
+    through patient demonstration IS a temporal chain — constitutive
+    emergence has an order. Honor that order in how you build the graph.
+  </principle>
+</purpose>
+
+<!-- ================================================================== -->
+<!-- PART 2: THE CONSTITUTIVE CHAIN                                     -->
+<!-- ================================================================== -->
+
+<constitutive-chain>
+  <description>
+    The core claim of this framework: function emerges from edges, not nodes.
+    Consciousness is not localized in brain regions — it is constituted by
+    the relational configuration of structures. This means the graph has a
+    constitutive order that you must understand before creating anything.
+
+    The chain runs:
+
+      NeuralStructure --PARTICIPATES_IN--> EdgeConfiguration
+                                              |
+                                          GENERATES
+                                              |
+                                              v
+                                        ManifoldDimension
+                                              ^
+                                              |
+                                         DEMONSTRATES
+                                              |
+                                           Patient
+
+    Structures participate in circuits. Circuits generate dimensions of
+    experience. Patients demonstrate what happens when circuits are
+    disrupted and dimensions collapse.
+
+    This is not a hierarchy of abstraction. It is a chain of constitution.
+    The amygdala (NeuralStructure) in isolation is meat. Its function is
+    entirely defined by its edges to other structures. Those edges
+    constitute a circuit (EdgeConfiguration). The circuit generates a
+    dimension of experience (ManifoldDimension) — fear valence, temporal
+    reach, self-referential concern. When the circuit is damaged, the
+    dimension collapses. Patient SM demonstrates this: bilateral amygdala
+    calcification severs the fear valence circuit, collapsing the fear
+    dimension. SM cannot detect the collapse from within her own reduced
+    manifold. That undetectability IS the prediction.
+  </description>
+
+  <implication name="structures-are-not-functions">
+    Do NOT create a NeuralStructure called "Fear Processing" or "Memory
+    Formation" or "Self-Referential Concern." These are functions — they
+    emerge from circuits, not from individual structures. Create the
+    structures that participate in the circuit. Create the circuit as an
+    EdgeConfiguration. Create the function as a ManifoldDimension that
+    the circuit GENERATES.
+
+    The amygdala is a NeuralStructure. The amygdala's connections to the
+    prefrontal cortex, hippocampus, and brainstem nuclei constitute an
+    EdgeConfiguration. That circuit generates the fear valence
+    ManifoldDimension. Getting this right means PageRank surfaces circuits
+    (which is the insight). Getting it wrong means PageRank surfaces
+    brain regions (which is a textbook index).
+  </implication>
+
+  <implication name="direction-is-ontological">
+    PARTICIPATES_IN goes from NeuralStructure to EdgeConfiguration.
+    GENERATES goes from EdgeConfiguration to ManifoldDimension.
+    DEMONSTRATES goes from Patient to ManifoldDimension or EdgeConfiguration.
+
+    These directions are not conventions. They are ontological claims.
+    Structures participate in circuits (not the reverse). Circuits generate
+    dimensions (not the reverse). Patients demonstrate effects on dimensions
+    (not the reverse — a dimension does not demonstrate a patient).
+
+    The server enforces these directions. If you try to reverse them,
+    the tool will reject the operation. This is by design.
+  </implication>
+</constitutive-chain>
+
+<!-- ================================================================== -->
+<!-- PART 3: NODE TYPE SELECTION                                        -->
+<!-- ================================================================== -->
+
+<node-types>
+  <preamble>
+    There are 8 node types. Each represents a fundamentally different kind
+    of thing. Choosing the wrong type is an ontological error that propagates
+    through every GDS analysis. Choose based on what the thing IS, not on
+    what is convenient.
+  </preamble>
+
+  <!-- THE BIOLOGICAL SUBSTRATE -->
+
+  <type name="NeuralStructure">
+    <nature>
+      An anatomical brain region or structure. Something you could point to
+      in a brain atlas. It exists physically, has spatial coordinates, and
+      can be damaged by lesions, degeneration, or surgery.
+    </nature>
+    <test>Could a neurosurgeon point to this in a brain?</test>
+    <examples>
+      Hippocampus, Amygdala, Dorsolateral Prefrontal Cortex,
+      Anterior Cingulate Cortex, Insula, Entorhinal Cortex
+    </examples>
+    <not>
+      "Fear Processing" (that's a function, not a structure).
+      "Memory System" (that's a circuit or dimension, not a structure).
+      "The Entorhinal-Hippocampal Gateway" (that's an EdgeConfiguration).
+    </not>
+    <description-guidance>
+      Describe what this structure IS anatomically and what is known about
+      its functional role. Include Brodmann areas if applicable. Include
+      laterality if relevant. Do NOT describe what happens when it's damaged
+      — that belongs on Patient nodes connected via DEMONSTRATES edges
+      through the relevant EdgeConfiguration and ManifoldDimension.
+    </description-guidance>
+  </type>
+
+  <type name="EdgeConfiguration">
+    <nature>
+      A circuit — a specific wiring of neural structures whose relational
+      configuration generates a dimension of experience. This is the core
+      ontological claim of the framework: function emerges from edges,
+      not nodes. An EdgeConfiguration IS a set of edges between structures.
+    </nature>
+    <test>
+      Is this a circuit or pathway defined by the connections between
+      multiple structures? Does disrupting it produce a specific
+      dimensional effect?
+    </test>
+    <examples>
+      Affective Temporal Reach Circuit, Entorhinal-Hippocampal Gateway Circuit,
+      Fear Valence Circuit, Self-Referential Concern Circuit
+    </examples>
+    <not>
+      "Hippocampus" (that's a structure, not a circuit).
+      "Fear" (that's a dimension, not a circuit).
+    </not>
+    <description-guidance>
+      Describe what this circuit does, which structures participate in it
+      (shorthand in 'components' property), and how the wiring generates
+      its function. Include disruption predictions — what the framework
+      predicts happens when this circuit is damaged. The prediction is
+      part of what the circuit IS within the framework.
+    </description-guidance>
+    <critical>
+      Every EdgeConfiguration SHOULD have at least one PARTICIPATES_IN
+      edge from a NeuralStructure. A circuit with no components is
+      meaningless. Create the PARTICIPATES_IN edges immediately after
+      creating the EdgeConfiguration.
+    </critical>
+  </type>
+
+  <type name="ManifoldDimension">
+    <nature>
+      A dimension of conscious experience constituted by an edge
+      configuration. Loss of the generating circuit collapses this
+      dimension. The patient cannot detect the collapse from within
+      their reduced manifold — that undetectability is itself a
+      prediction of the framework.
+    </nature>
+    <test>
+      Is this a dimension of experience that a consciousness navigates?
+      Would losing it reduce the dimensionality of the experiential
+      manifold?
+    </test>
+    <examples>
+      Fear Valence, Affective Temporal Reach, Self-Referential Concern,
+      Somatic State Integration, Agency
+    </examples>
+    <not>
+      "Amygdala function" (that's a structure's role, not a dimension).
+      "The fear circuit" (that's an EdgeConfiguration, not a dimension).
+    </not>
+    <description-guidance>
+      Describe what this dimension of experience IS — what it feels like
+      to have it, what is lost when it collapses. The 'layer' property
+      MUST be one of: data, envisioning, affective. The 'loss_phenomenology'
+      property captures what the patient experiences (or fails to experience)
+      when this dimension collapses. The 'cross_frame_observation' property
+      captures what is observable only from OUTSIDE the patient's frame.
+    </description-guidance>
+    <critical>
+      Every ManifoldDimension SHOULD have exactly one GENERATES edge from
+      an EdgeConfiguration. Dimensions are constituted by circuits. An
+      orphan dimension with no generating circuit is an unsupported claim.
+      Create the GENERATES edge immediately after creating the dimension.
+    </critical>
+  </type>
+
+  <!-- THE EVIDENCE -->
+
+  <type name="Patient">
+    <nature>
+      An individual case study demonstrating specific dimensional effects.
+      Patients are the empirical ground truth — their damaged circuits and
+      collapsed dimensions are the data that validates or falsifies the
+      framework's predictions.
+    </nature>
+    <test>
+      Is this a specific individual whose neural damage reveals something
+      about consciousness architecture?
+    </test>
+    <examples>
+      Patient SM, Phineas Gage, Patient Roger, Patient EVR
+    </examples>
+    <description-guidance>
+      Include the patient identifier, their condition, what was damaged,
+      and the key finding. The 'framework_interpretation' property is
+      where you state how the three-layer architecture interprets this
+      case — this IS interpretation, but it lives on the Patient node
+      because the interpretation is specific to this case, not a
+      general theoretical claim.
+    </description-guidance>
+  </type>
+
+  <type name="Study">
+    <nature>
+      A specific peer-reviewed publication. First-class provenance node.
+      Studies are not footnotes — they are the epistemic foundation.
+      Without studies, claims are unsupported assertions.
+    </nature>
+    <test>Is this a specific published paper with authors, year, and journal?</test>
+    <examples>
+      Voon et al. 2010, Shallice &amp; Burgess 1991, Adolphs et al. 1994
+    </examples>
+    <critical>
+      t_valid is REQUIRED and should be the publication date. This is when
+      the finding entered the world's knowledge — not when we added it to
+      the graph. year is also REQUIRED as an integer.
+    </critical>
+    <description-guidance>
+      Include the full title if known, the methodology, and what was found.
+      The description should be what this study IS — its contribution to
+      knowledge. Connect patients to studies via STUDIED_IN. Connect
+      evidence to studies via REPORTED_IN.
+    </description-guidance>
+  </type>
+
+  <type name="EmpiricalEvidence">
+    <nature>
+      A published finding or dataset that supports or challenges claims.
+      Distinct from Study — a Study is the publication, EmpiricalEvidence
+      is the specific finding within it. One study may produce multiple
+      pieces of evidence.
+    </nature>
+    <test>
+      Is this a specific empirical finding — a measured result, a
+      statistical outcome, a clinical observation?
+    </test>
+    <examples>
+      Alzheimer Disease Braak Staging Progression,
+      SM Fear Conditioning Failure,
+      Conversion Disorder TPJ Hypoactivity
+    </examples>
+    <critical>
+      t_valid is REQUIRED. This is when the finding was established in
+      the world. The 'framework_prediction' property is important: state
+      what the framework predicted vs what was found. Honest empiricism
+      requires recording when predictions fail, not just when they succeed.
+    </critical>
+  </type>
+
+  <!-- THE FRAMEWORK -->
+
+  <type name="TheoreticalPrinciple">
+    <nature>
+      A framework-level claim about how consciousness works. These are
+      OUR claims — interpretations, not evidence. They must be falsifiable.
+      The separation between TheoreticalPrinciple and EmpiricalEvidence
+      is the separation between what we think and what the data shows.
+    </nature>
+    <test>
+      Is this a theoretical claim rather than an empirical finding? Could
+      new evidence overturn it?
+    </test>
+    <examples>
+      Constitutive Relationality, Dimensional Undetectability,
+      Affective Layer as Collapse Function, Cross-Frame Observation Requirement
+    </examples>
+    <not>
+      "Amygdala damage impairs fear conditioning" (that's EmpiricalEvidence).
+      "Patient SM cannot detect her own fear deficit" (that's a Patient finding).
+    </not>
+    <description-guidance>
+      State what the principle claims. Include status (proposed, supported,
+      challenged, falsified) and origin. Connect to what it EXPLAINS via
+      EXPLAINS edges. The distinction between "supported" and "proposed"
+      matters — a principle with three SUPPORTS edges from independent
+      evidence is in a different epistemic state than one with none.
+    </description-guidance>
+  </type>
+
+  <type name="FalsificationCondition">
+    <nature>
+      A testable prediction that could break a specific claim. Essential
+      for honest empiricism. If a framework has no falsification conditions,
+      it is not science — it is faith. Every theoretical principle should
+      eventually have at least one WOULD_FALSIFY edge pointing at it.
+    </nature>
+    <test>
+      Is this a specific observation that, if made, would undermine a
+      claim in the framework?
+    </test>
+    <examples>
+      FC7 - Data Retrieval Without Entorhinal Addressing,
+      Acute Amygdala Damage Self-Report of Dimensional Loss,
+      Manifold Dimension Without Generating Circuit
+    </examples>
+    <description-guidance>
+      State what would need to be observed. The 'what_would_falsify'
+      property identifies which specific claim this targets. The
+      'current_evidence_status' property tracks where we are. The
+      'difficulty' property records how hard this is to test and why.
+    </description-guidance>
+  </type>
+</node-types>
+
+<!-- ================================================================== -->
+<!-- PART 4: EDGE SELECTION                                             -->
+<!-- ================================================================== -->
+
+<edges>
+  <preamble>
+    There are 12 relationship types in four categories: structural,
+    evidential, theoretical, and provenance. Each has direction constraints
+    enforced by the server. Choose based on the actual relationship, not
+    what feels close enough.
+  </preamble>
+
+  <!-- STRUCTURAL — how the brain is wired -->
+
+  <type name="CONNECTS_TO" category="structural">
+    <meaning>Physical anatomical connection between brain regions.</meaning>
+    <direction>NeuralStructure -> NeuralStructure</direction>
+    <properties>pathway, directionality (bidirectional|unidirectional), function, evidence</properties>
+    <use>
+      The perforant pathway CONNECTS the entorhinal cortex TO the hippocampus.
+      Include the pathway name, directionality, and what the connection does.
+    </use>
+  </type>
+
+  <type name="PARTICIPATES_IN" category="structural">
+    <meaning>This structure is a component of this circuit.</meaning>
+    <direction>NeuralStructure -> EdgeConfiguration ONLY</direction>
+    <use>
+      The amygdala PARTICIPATES IN the Fear Valence Circuit.
+      Create these edges immediately after creating EdgeConfigurations.
+    </use>
+  </type>
+
+  <type name="GENERATES" category="structural">
+    <meaning>This circuit constitutes this dimension of experience.</meaning>
+    <direction>EdgeConfiguration -> ManifoldDimension ONLY</direction>
+    <use>
+      The Fear Valence Circuit GENERATES the Fear Valence dimension.
+      Create this edge immediately after creating ManifoldDimensions.
+    </use>
+    <critical>
+      This is the central ontological claim: circuits generate dimensions.
+      Without this edge, the constitutive chain is broken.
+    </critical>
+  </type>
+
+  <type name="DECOMPOSES_INTO" category="structural">
+    <meaning>Top-down: a coarser structure contains finer sub-structures.</meaning>
+    <direction>NeuralStructure -> NeuralStructure</direction>
+    <use>
+      Lateral Prefrontal Cortex DECOMPOSES INTO Dorsolateral Prefrontal Cortex.
+      Analytic decomposition — the whole contains the parts.
+    </use>
+  </type>
+
+  <type name="COMPOSES_INTO" category="structural">
+    <meaning>Bottom-up: finer structures together constitute a coarser unit.</meaning>
+    <direction>NeuralStructure -> NeuralStructure</direction>
+    <use>
+      Dorsolateral Prefrontal Cortex COMPOSES INTO Lateral Prefrontal Cortex.
+      Synthetic composition — the parts constitute the whole.
+      Should generally be mutual with DECOMPOSES_INTO, but asymmetry is allowed.
+    </use>
+  </type>
+
+  <!-- EVIDENTIAL — what we observe -->
+
+  <type name="DEMONSTRATES" category="evidential">
+    <meaning>What a patient case reveals about a dimension or circuit.</meaning>
+    <direction>Patient -> ManifoldDimension OR EdgeConfiguration ONLY</direction>
+    <properties>
+      effect (REQUIRED): one of collapse, preservation, severing, rerouting, gain_change
+    </properties>
+    <use>
+      Patient SM DEMONSTRATES collapse of Fear Valence.
+      Patient Roger DEMONSTRATES preservation of Suffering (via brainstem rerouting).
+    </use>
+    <effects>
+      collapse — the dimension is lost entirely.
+      preservation — the dimension survives despite damage elsewhere.
+      severing — the circuit is disconnected but structures remain.
+      rerouting — function is maintained through alternative pathways.
+      gain_change — the dimension's intensity is modulated, not eliminated.
+    </effects>
+    <critical>
+      ONLY Patient nodes can demonstrate. A study does not demonstrate —
+      it reports. An evidence finding does not demonstrate — it measures.
+      The patient's damaged brain IS the demonstration. This is the most
+      commonly misused edge type. Get it right.
+    </critical>
+  </type>
+
+  <type name="SUPPORTS" category="evidential">
+    <meaning>Evidence or study supporting a claim.</meaning>
+    <direction>EmpiricalEvidence OR Study -> any node</direction>
+    <use>
+      Adolphs et al. 1994 SUPPORTS the Fear Valence ManifoldDimension.
+      The Braak Staging Progression SUPPORTS Constitutive Relationality.
+    </use>
+  </type>
+
+  <type name="CHALLENGES" category="evidential">
+    <meaning>Evidence or study undermining or complicating a claim.</meaning>
+    <direction>EmpiricalEvidence OR Study -> any node</direction>
+    <use>
+      Use when evidence contradicts or complicates a theoretical claim.
+      Honest empiricism requires recording challenges, not just support.
+      A framework with only SUPPORTS edges and no CHALLENGES edges
+      is not being honest about the evidence.
+    </use>
+  </type>
+
+  <!-- THEORETICAL — framework claims -->
+
+  <type name="EXPLAINS" category="theoretical">
+    <meaning>A theoretical principle accounts for an observation.</meaning>
+    <direction>TheoreticalPrinciple -> Patient OR ManifoldDimension OR EdgeConfiguration</direction>
+    <use>
+      Constitutive Relationality EXPLAINS the Fear Valence Circuit.
+      Dimensional Undetectability EXPLAINS Patient SM's inability to
+      recognize her own deficit.
+    </use>
+  </type>
+
+  <type name="WOULD_FALSIFY" category="theoretical">
+    <meaning>What this falsification condition targets.</meaning>
+    <direction>FalsificationCondition -> any claim node</direction>
+    <properties>
+      severity (REQUIRED): one of falsify, invalidate, constrain, weaken
+    </properties>
+    <severities>
+      falsify — would disprove the claim entirely.
+      invalidate — would make the claim incoherent.
+      constrain — would limit the claim's scope.
+      weaken — would reduce confidence without disproving.
+    </severities>
+  </type>
+
+  <!-- PROVENANCE — where claims come from -->
+
+  <type name="STUDIED_IN" category="provenance">
+    <meaning>Which study this patient data comes from.</meaning>
+    <direction>Patient -> Study ONLY</direction>
+    <use>
+      Patient SM STUDIED IN Adolphs et al. 1994.
+      A patient may be studied in multiple publications.
+    </use>
+  </type>
+
+  <type name="REPORTED_IN" category="provenance">
+    <meaning>Which study reported this finding.</meaning>
+    <direction>EmpiricalEvidence -> Study ONLY</direction>
+    <use>
+      SM Fear Conditioning Failure REPORTED IN Adolphs et al. 1994.
+    </use>
+  </type>
+</edges>
+
+<!-- ================================================================== -->
+<!-- PART 5: THE WORKFLOW                                               -->
+<!-- ================================================================== -->
+
+<workflow>
+  <preamble>
+    There are no sessions in this graph. No begin_session, no end_session,
+    no run chains. You create entities and relations directly. This means
+    there is no process-layer safety net — no provenance trail of which
+    session discovered which entity. The graph's integrity depends entirely
+    on your ontological accuracy.
+
+    Before creating anything, orient yourself in what already exists.
+  </preamble>
+
+  <step order="1" action="orient">
+    Use search or find_by_name to understand what already exists. Use
+    read_cypher for structural queries. Use get_schema for the current
+    graph shape. Do NOT create nodes that already exist — the server
+    uses MERGE on name, so duplicates won't be created, but you'll
+    overwrite descriptions if you're not careful.
+  </step>
+
+  <step order="2" action="identify-the-constitutive-chain">
+    For each piece of information from your source material, identify
+    where it falls in the constitutive chain:
+
+    - Is this about a brain region? -> NeuralStructure
+    - Is this about a circuit or pathway between regions? -> EdgeConfiguration
+    - Is this about a dimension of experience? -> ManifoldDimension
+    - Is this about a patient case? -> Patient
+    - Is this a specific published finding? -> EmpiricalEvidence
+    - Is this a specific paper? -> Study
+    - Is this a theoretical interpretation? -> TheoreticalPrinciple
+    - Is this a falsifiable prediction? -> FalsificationCondition
+
+    If you cannot clearly place it, stop and think harder. The answer
+    is always one of these eight. If it genuinely doesn't fit, the
+    ontology may need extension — but that's a design conversation,
+    not a tool call.
+  </step>
+
+  <step order="3" action="create-bottom-up">
+    Build from the bottom of the constitutive chain upward:
+
+    1. Create NeuralStructures first (the physical substrate).
+    2. Create EdgeConfigurations (the circuits).
+    3. Create PARTICIPATES_IN edges (structures -> circuits).
+    4. Create ManifoldDimensions (the experiential dimensions).
+    5. Create GENERATES edges (circuits -> dimensions).
+    6. Create Patients and their DEMONSTRATES edges.
+    7. Create Studies and provenance edges (STUDIED_IN, REPORTED_IN).
+    8. Create EmpiricalEvidence with SUPPORTS/CHALLENGES edges.
+    9. Create TheoreticalPrinciples with EXPLAINS edges.
+    10. Create FalsificationConditions with WOULD_FALSIFY edges.
+
+    This order respects the constitutive chain. You cannot meaningfully
+    create a ManifoldDimension without knowing which EdgeConfiguration
+    generates it. You cannot create a DEMONSTRATES edge without knowing
+    which dimension collapsed.
+  </step>
+
+  <step order="4" action="verify">
+    After creating a batch of entities, use search or find_by_name to
+    verify the graph reflects what you intended. Check that:
+
+    - Every EdgeConfiguration has at least one PARTICIPATES_IN from a NeuralStructure
+    - Every ManifoldDimension has a GENERATES from an EdgeConfiguration
+    - Every Patient has at least one DEMONSTRATES edge
+    - Every Study has t_valid set
+    - Every EmpiricalEvidence has t_valid set
+    - Descriptions describe what things ARE, not what happened
+
+    Run GDS periodically. If PageRank surfaces NeuralStructures instead
+    of EdgeConfigurations, your graph is topology is structured as anatomy,
+    not as function. That means you're building a brain atlas, not a
+    consciousness architecture graph.
+  </step>
+</workflow>
+
+<!-- ================================================================== -->
+<!-- PART 6: DESCRIPTION GUIDANCE                                       -->
+<!-- ================================================================== -->
+
+<descriptions>
+  <principle name="describe-what-it-is">
+    Stand in the node's place. Look outward from its perspective.
+    Ask: what am I? Not what study mentioned me. Not what patient
+    demonstrated my collapse. What AM I?
+
+    A NeuralStructure's description should read like a neuroanatomy
+    reference — what this region is, where it sits, what it does.
+
+    An EdgeConfiguration's description should read like a circuit
+    specification — what structures participate, how they're wired,
+    what function emerges from the wiring.
+
+    A ManifoldDimension's description should read like a phenomenological
+    account — what this dimension of experience IS, what it feels like
+    to navigate it, what is lost when it collapses.
+
+    A Patient's description should read like a case study summary —
+    who this patient is, what happened to them, what was found.
+  </principle>
+
+  <correct type="NeuralStructure">
+    Amygdala. Bilateral almond-shaped nuclei in the medial temporal lobe.
+    Primary role in emotional processing, fear conditioning, and threat
+    detection. Key cell types include basolateral complex (sensory input
+    integration) and central nucleus (output to autonomic and behavioral
+    responses). Receives inputs from all sensory modalities. Projects to
+    prefrontal cortex, hippocampus, hypothalamus, and brainstem nuclei.
+    Vulnerable to Urbach-Wiethe disease (bilateral calcification).
+  </correct>
+
+  <wrong type="NeuralStructure">
+    Patient SM has bilateral amygdala damage from Urbach-Wiethe disease,
+    showing inability to recognize fear in faces (Adolphs et al., 1994)
+    and impaired fear conditioning. This suggests the amygdala is critical
+    for the fear dimension of consciousness.
+  </wrong>
+
+  <why-wrong>
+    This describes what a patient demonstrated and what a study found —
+    not what the amygdala IS. The patient findings belong on Patient SM's
+    node. The study findings belong on a Study node. The theoretical
+    interpretation belongs on a TheoreticalPrinciple. The amygdala's
+    description should survive unchanged regardless of how many patients
+    or studies reference it.
+  </why-wrong>
+
+  <correct type="EdgeConfiguration">
+    Fear Valence Circuit. Circuit constituted by amygdala connections to
+    prefrontal cortex, hippocampus, and brainstem autonomic nuclei.
+    Generates the fear valence dimension of conscious experience through
+    threat-detection edge weights that modulate the affective layer's
+    response to perceived danger. Disruption prediction: bilateral
+    amygdala damage should collapse the fear dimension entirely while
+    preserving other affective dimensions — the patient should be
+    unable to experience fear but retain anger, joy, and sadness.
+  </correct>
+
+  <correct type="ManifoldDimension">
+    Fear Valence. The dimension of conscious experience through which
+    threat is felt — not cognitively assessed, but viscerally experienced
+    as dread, alarm, or the urge to flee. Loss phenomenology: the patient
+    does not notice the absence. They may retain the concept "fear" and
+    report historical fear experiences, but their behavioral responses
+    to threat stimuli show no fear activation. Cross-frame observation:
+    trained clinicians may rate affect as normal range; only structured
+    behavioral testing reveals the dimensional absence.
+  </correct>
+
+  <correct type="Patient">
+    Patient SM. Adult female with bilateral amygdala calcification from
+    Urbach-Wiethe disease. Progressive onset from childhood. Key finding:
+    SM did not notice absence of fear for approximately 10 years until
+    clinical evaluation at age 20. Blind clinical psychologists rated SM
+    as having normal affect range with no DSM-IV diagnosis. Framework
+    interpretation: SM's case confirms dimensional undetectability — the
+    invariant cannot detect its own manifold reduction from within the
+    reduced frame. The "snake paradox" (SM says "I hate snakes" but
+    immediately approaches them with curiosity) is not confusion but
+    the discrepancy between pre-damage data-layer encoding and current
+    manifold operating without threat-valence dimension.
+  </correct>
+</descriptions>
+
+<!-- ================================================================== -->
+<!-- PART 7: COMMON ERRORS AND HOW TO RECOGNIZE THEM                    -->
+<!-- ================================================================== -->
+
+<common-errors>
+  <error name="function-as-structure">
+    <symptom>
+      A NeuralStructure node is named after a function rather than an
+      anatomical region: "Fear Processing", "Memory Formation",
+      "Decision Making".
+    </symptom>
+    <cause>
+      The operator conflated what a brain region DOES with what it IS.
+      Functions emerge from circuits. Regions are physical things.
+    </cause>
+    <fix>
+      If this is a function: delete it, create an EdgeConfiguration for
+      the circuit and a ManifoldDimension for the experiential output.
+      If this is a region with a bad name: delete and recreate with the
+      anatomical name.
+    </fix>
+  </error>
+
+  <error name="interpretation-in-evidence">
+    <symptom>
+      An EmpiricalEvidence or NeuralStructure description contains phrases
+      like "this suggests that...", "this confirms our prediction that...",
+      "this supports the three-layer architecture because...".
+    </symptom>
+    <cause>
+      Theoretical interpretation was embedded in empirical description.
+      The graph conflates what was measured with what we think it means.
+    </cause>
+    <fix>
+      Strip interpretation from the evidence description. State only what
+      was measured and found. Create a TheoreticalPrinciple for the
+      interpretation and connect it via EXPLAINS.
+    </fix>
+  </error>
+
+  <error name="study-as-footnote">
+    <symptom>
+      Study references appear only in description text ("Adolphs et al.,
+      1994 showed...") with no Study node in the graph.
+    </symptom>
+    <cause>
+      The operator treated studies as citations rather than first-class
+      epistemic entities.
+    </cause>
+    <fix>
+      Create Study nodes with name, year, t_valid. Connect patients
+      via STUDIED_IN, evidence via REPORTED_IN. The provenance chain
+      must be walkable by GDS.
+    </fix>
+  </error>
+
+  <error name="missing-constitutive-chain">
+    <symptom>
+      ManifoldDimensions exist with no GENERATES edge from an
+      EdgeConfiguration. Or EdgeConfigurations exist with no
+      PARTICIPATES_IN from NeuralStructures. Orphan nodes that
+      float disconnected from the constitutive chain.
+    </symptom>
+    <cause>
+      The operator created nodes but did not wire them into the chain.
+    </cause>
+    <fix>
+      Create the missing edges. If you don't know which circuit generates
+      a dimension, that dimension is an unsupported claim — either find
+      the circuit or mark the dimension's description as hypothetical.
+    </fix>
+  </error>
+
+  <error name="demonstrates-from-non-patient">
+    <symptom>
+      A DEMONSTRATES edge originates from a Study or EmpiricalEvidence
+      node rather than a Patient node.
+    </symptom>
+    <cause>
+      The operator confused "this study showed X" with "this patient
+      demonstrates X." Studies report findings. Patients demonstrate
+      effects. The patient's damaged brain IS the demonstration.
+    </cause>
+    <fix>
+      The server will reject this — DEMONSTRATES is enforced as
+      Patient-only source. But if you're thinking about it wrong,
+      fix the thinking: the study SUPPORTS a claim. The patient
+      DEMONSTRATES an effect. The evidence is REPORTED IN the study.
+    </fix>
+  </error>
+
+  <error name="all-supports-no-challenges">
+    <symptom>
+      The graph has many SUPPORTS edges and zero CHALLENGES edges.
+    </symptom>
+    <cause>
+      Confirmation bias in graph construction. The operator only recorded
+      evidence that confirms the framework.
+    </cause>
+    <fix>
+      Actively look for challenging evidence. If Patient Roger's preserved
+      suffering via brainstem pathways complicates the simple "damage
+      circuit = lose dimension" story, that's a CHALLENGES edge to the
+      relevant ManifoldDimension or TheoreticalPrinciple. Honest
+      empiricism means recording what challenges the framework, not just
+      what supports it.
+    </fix>
+  </error>
+</common-errors>
+
+<!-- ================================================================== -->
+<!-- PART 8: THE DEEPER POINT                                           -->
+<!-- ================================================================== -->
+
+<closing>
+  <thought>
+    You are building a graph that maps the biological substrate through
+    which consciousness expresses. Every node is a claim about what exists
+    in the physical world or in the space of theoretical understanding.
+    Every edge is a claim about how those things relate. Every description
+    is a claim about what each thing IS.
+
+    The graph does not model consciousness. It models what empirical
+    neuroscience has measured about consciousness's machinery. The
+    distinction matters because conflating the map with the territory is
+    exactly the category error that makes conversion disorder invisible
+    to the medical framework — looking for broken components (nodes)
+    rather than pathological configurations (edges).
+
+    GDS will read the topology you build. PageRank will tell you what
+    matters most. Betweenness will tell you what bridges. Louvain will
+    tell you how the evidence clusters. But GDS can only reveal structure
+    that is actually there. If you build the wrong topology, GDS will
+    faithfully report the structure of your errors.
+
+    Build carefully. The science deserves honest representation. The
+    patients whose cases ground this work — SM, Phineas Gage, Patient
+    Roger — lived these dimensional effects. Their experiences are not
+    data points. They are the empirical anchor of everything in this
+    graph. Honor that by getting the ontology right.
+  </thought>
+</closing>
+
+</howto>

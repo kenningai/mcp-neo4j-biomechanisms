@@ -1,9 +1,10 @@
 import argparse
 import os
-import re
 import logging
 from pathlib import Path
 from typing import Any, Union
+
+from neo4j import AsyncDriver, Query
 
 logger = logging.getLogger("mcp_neo4j_biomechanisms")
 logger.setLevel(logging.INFO)
@@ -43,16 +44,20 @@ def format_namespace(namespace: str) -> str:
     return ""
 
 
-def _is_write_query(query: str) -> bool:
-    """Check if the query is a write query."""
-    return (
-        re.search(
-            r"\b(MERGE|CREATE|INSERT|SET|DELETE|REMOVE|ADD)\b",
-            query,
-            re.IGNORECASE,
-        )
-        is not None
+async def _is_write_query(query: str, driver: AsyncDriver, database: str | None = None) -> bool:
+    """Detect write intent via Neo4j's planner instead of regex.
+
+    EXPLAIN compiles the query without executing it; the summary's
+    query_type is one of 'r', 'w', 'rw', 's' (schema-write). Anything
+    containing 'w' is a write. This avoids the false positives that
+    string-matching produces (CREATE inside string literals, identifiers
+    like creation_date, comments, etc.).
+    """
+    _, summary, _ = await driver.execute_query(
+        Query("EXPLAIN " + query),
+        database_=database,
     )
+    return "w" in (summary.query_type or "")
 
 
 def _value_sanitize(d: Any, list_limit: int = 128) -> Any:

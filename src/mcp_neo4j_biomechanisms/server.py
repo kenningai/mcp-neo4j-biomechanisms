@@ -11,13 +11,9 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from fastmcp.server import FastMCP
 from fastmcp.exceptions import ToolError
-from fastmcp.tools.tool import ToolResult
+from fastmcp.tools.base import ToolResult
 from mcp.types import TextContent, ToolAnnotations
 from neo4j.exceptions import Neo4jError
-
-# Monkey patch FastMCP to support full HTTP method suite
-from fastmcp.server import http as fastmcp_http
-from starlette.routing import Route
 
 from .biomechanisms import (
     Neo4jBiomechanisms,
@@ -33,30 +29,6 @@ from .utils import format_namespace, _is_write_query, _value_sanitize
 
 logger = logging.getLogger("mcp_neo4j_biomechanisms")
 logger.setLevel(logging.INFO)
-
-
-# -- FastMCP Monkey Patch (bug in 2.13.0.2) -----------------------------------
-
-_original_create_streamable_http_app = fastmcp_http.create_streamable_http_app
-
-
-def patched_create_streamable_http_app(*args, **kwargs):
-    app = _original_create_streamable_http_app(*args, **kwargs)
-    streamable_http_path = kwargs.get("streamable_http_path", "/mcp")
-    for i, route in enumerate(app.routes):
-        if isinstance(route, Route) and route.path == streamable_http_path:
-            if not route.methods or route.methods == ["GET"]:
-                app.routes[i] = Route(
-                    route.path,
-                    endpoint=route.endpoint,
-                    methods=["GET", "POST", "DELETE"],
-                )
-                logger.info(f"Patched route {route.path} to accept GET, POST, DELETE")
-                break
-    return app
-
-
-fastmcp_http.create_streamable_http_app = patched_create_streamable_http_app
 
 
 # -- Tool Helpers -------------------------------------------------------------
@@ -387,12 +359,12 @@ def create_mcp_server(
         params: dict[str, Any] = Field(default_factory=dict, description="Parameters for the query."),
     ) -> ToolResult:
         """Execute a read-only Cypher query. Write queries are rejected."""
-        if _is_write_query(query):
-            raise ToolError(
-                "Write queries are not allowed via read_cypher. "
-                "Use the bounded mutation tools instead."
-            )
         async with _tool_errors("read_cypher"):
+            if await _is_write_query(query, bio.driver):
+                raise ToolError(
+                    "Write queries are not allowed via read_cypher. "
+                    "Use the bounded mutation tools instead."
+                )
             result = await bio.driver.execute_query(
                 Query(query, timeout=read_timeout),
                 parameters_=params,
@@ -424,7 +396,6 @@ def create_mcp_server(
             description="Relationship types to include (defaults to all)",
         ),
         undirected: bool = Field(default=True, description="Treat relationships as undirected (default true)"),
-        memory_gb: str = Field(default="2GB", description="Memory allocation for the projection."),
     ) -> ToolResult:
         """Create a GDS graph projection for analytics.
 
@@ -453,14 +424,15 @@ def create_mcp_server(
             if where_parts:
                 where_clause = "WHERE " + " AND ".join(where_parts)
 
-            config_parts = [f"memory: '{memory_gb}'"]
+            config_parts = []
             if undirected:
                 config_parts.append("undirectedRelationshipTypes: ['*']")
+            config_map = "{" + ", ".join(config_parts) + "}" if config_parts else "{}"
 
             query = f"""
                 {match_clause}
                 {where_clause}
-                RETURN gds.graph.project($name, source, target, {{}}, {{{", ".join(config_parts)}}})
+                RETURN gds.graph.project($name, source, target, {{}}, {config_map})
             """
 
             result = await bio.driver.execute_query(
@@ -590,7 +562,7 @@ async def main(
     neo4j_user: str,
     neo4j_password: str,
     neo4j_database: str,
-    transport: Literal["stdio", "sse", "streamable-http"] = "stdio",
+    transport: Literal["stdio", "sse", "http", "streamable-http"] = "stdio",
     namespace: str = "",
     host: str = "127.0.0.1",
     port: int = 8000,
@@ -629,7 +601,7 @@ async def main(
     mcp = create_mcp_server(bio, namespace, read_timeout=read_timeout)
 
     match transport:
-        case "streamable-http":
+        case "streamable-http" | "http":
             await mcp.run_http_async(
                 host=host, port=port, path=path,
                 middleware=custom_middleware,
@@ -645,4 +617,7 @@ async def main(
                 transport="sse",
             )
         case _:
-            raise ValueError(f"Unsupported transport: {transport}")
+            raise ValueError(
+                f"Unsupported transport: {transport}. "
+                "Must be one of: stdio, sse, http, streamable-http"
+            )

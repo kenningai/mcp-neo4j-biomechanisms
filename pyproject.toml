@@ -1,11 +1,11 @@
 [project]
 name = "mcp-neo4j-biomechanisms"
-version = "0.1.0"
+version = "0.2.0"
 description = "Empirical Neuroscience Knowledge Graph MCP Server — how conscious experience is expressed in biological substrate"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "fastmcp>=2.0.0",
+    "fastmcp>=3.0,<4",
     "neo4j>=5.26.0",
     "pydantic>=2.10.1",
     "starlette>=0.28.0",
