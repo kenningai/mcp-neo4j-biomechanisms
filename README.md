@@ -1,4 +1,6 @@
-# mcp-neo4j-biomechanisms
+# Kenning Soma
+
+**The biological substrate of conscious experience, held as a falsifiable graph.**
 
 A schema-bounded MCP server for empirical neuroscience knowledge graphs in Neo4j.
 
@@ -16,10 +18,10 @@ Requires Python ≥3.10, Neo4j ≥5.26 with the APOC and GDS plugins enabled, an
 
 ```bash
 # stdio (default; for Claude Desktop and similar)
-uv run mcp-neo4j-biomechanisms --db-url bolt://localhost:7687
+uv run kenning-soma --db-url bolt://localhost:7687
 
 # streamable HTTP
-uv run mcp-neo4j-biomechanisms \
+uv run kenning-soma \
   --transport http --server-host 0.0.0.0 --server-port 8000 --server-path /mcp/
 ```
 

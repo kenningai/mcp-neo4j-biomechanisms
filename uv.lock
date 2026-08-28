@@ -969,6 +969,43 @@ wheels = [
 ]
 
 [[package]]
+name = "kenning-soma"
+version = "0.4.0"
+source = { editable = "." }
+dependencies = [
+    { name = "fastmcp" },
+    { name = "neo4j" },
+    { name = "pydantic" },
+    { name = "starlette" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "aiohttp" },
+    { name = "pyright" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "testcontainers", extra = ["neo4j"] },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "fastmcp", specifier = ">=3.0,<4" },
+    { name = "neo4j", specifier = ">=5.26.0" },
+    { name = "pydantic", specifier = ">=2.10.1" },
+    { name = "starlette", specifier = ">=0.28.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "aiohttp", specifier = ">=3.8.0" },
+    { name = "pyright", specifier = ">=1.1.389" },
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-asyncio", specifier = ">=0.25.3" },
+    { name = "testcontainers", extras = ["neo4j"], specifier = ">=4.10.0" },
+]
+
+[[package]]
 name = "keyring"
 version = "25.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1021,43 +1058,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/8b/eb/c0cfc62075dc6e1ec1c64d352ae09ac051d9334311ed226f1f425312848a/mcp-1.27.0.tar.gz", hash = "sha256:d3dc35a7eec0d458c1da4976a48f982097ddaab87e278c5511d5a4a56e852b83", size = 607509, upload-time = "2026-04-02T14:48:08.88Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9c/46/f6b4ad632c67ef35209a66127e4bddc95759649dd595f71f13fba11bdf9a/mcp-1.27.0-py3-none-any.whl", hash = "sha256:5ce1fa81614958e267b21fb2aa34e0aea8e2c6ede60d52aba45fd47246b4d741", size = 215967, upload-time = "2026-04-02T14:48:07.24Z" },
-]
-
-[[package]]
-name = "mcp-neo4j-biomechanisms"
-version = "0.3.0"
-source = { editable = "." }
-dependencies = [
-    { name = "fastmcp" },
-    { name = "neo4j" },
-    { name = "pydantic" },
-    { name = "starlette" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "aiohttp" },
-    { name = "pyright" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-    { name = "testcontainers", extra = ["neo4j"] },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "fastmcp", specifier = ">=3.0,<4" },
-    { name = "neo4j", specifier = ">=5.26.0" },
-    { name = "pydantic", specifier = ">=2.10.1" },
-    { name = "starlette", specifier = ">=0.28.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "aiohttp", specifier = ">=3.8.0" },
-    { name = "pyright", specifier = ">=1.1.389" },
-    { name = "pytest", specifier = ">=8.3.5" },
-    { name = "pytest-asyncio", specifier = ">=0.25.3" },
-    { name = "testcontainers", extras = ["neo4j"], specifier = ">=4.10.0" },
 ]
 
 [[package]]

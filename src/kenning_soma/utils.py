@@ -6,7 +6,7 @@ from typing import Any, Union
 
 from neo4j import AsyncDriver, Query
 
-logger = logging.getLogger("mcp_neo4j_biomechanisms")
+logger = logging.getLogger("kenning_soma")
 logger.setLevel(logging.INFO)
 
 # -- Cypher Query Loading -----------------------------------------------------

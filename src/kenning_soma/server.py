@@ -27,7 +27,7 @@ from .biomechanisms import (
 )
 from .utils import format_namespace, _is_write_query, _value_sanitize
 
-logger = logging.getLogger("mcp_neo4j_biomechanisms")
+logger = logging.getLogger("kenning_soma")
 logger.setLevel(logging.INFO)
 
 
@@ -76,7 +76,7 @@ def create_mcp_server(
     """Create an MCP server instance for the biomechanisms knowledge graph."""
 
     ns = format_namespace(namespace)
-    mcp: FastMCP = FastMCP("mcp-neo4j-biomechanisms")
+    mcp: FastMCP = FastMCP("kenning-soma")
 
     # -- Entity Tools ---------------------------------------------------------
 

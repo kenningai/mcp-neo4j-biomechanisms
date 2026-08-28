@@ -1,11 +1,11 @@
-"""Unit tests for mcp-neo4j-biomechanisms.
+"""Unit tests for kenning-soma.
 
 Tests validation logic without requiring a Neo4j instance.
 """
 
 import pytest
 
-from mcp_neo4j_biomechanisms.biomechanisms import (
+from kenning_soma.biomechanisms import (
     NodeType,
     RelationType,
     validate_entity,
@@ -13,7 +13,7 @@ from mcp_neo4j_biomechanisms.biomechanisms import (
     NODE_SCHEMAS,
     RELATION_SCHEMAS,
 )
-from mcp_neo4j_biomechanisms.utils import format_namespace
+from kenning_soma.utils import format_namespace
 
 
 # -- NodeType Enum Tests ------------------------------------------------------

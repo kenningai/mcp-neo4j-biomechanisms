@@ -28,3 +28,4 @@ Enum Tests	test class heading in test_server.py
 The Entorhinal	anatomical term — "The Entorhinal-Hippocampal Gateway", an EdgeConfiguration example in HOWTO.xml
 The Fear Valence Circuit GENERATES	example graph statement in HOWTO.xml — EdgeConfiguration name plus relation type
 The Braak Staging Progression SUPPORTS Constitutive Relationality	example graph statement in HOWTO.xml — EmpiricalEvidence name, relation type, TheoreticalPrinciple name
+The Docker	product name fragment, sentence-initial in release notes

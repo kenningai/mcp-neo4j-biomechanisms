@@ -1,6 +1,6 @@
 [project]
-name = "mcp-neo4j-biomechanisms"
-version = "0.3.0"
+name = "kenning-soma"
+version = "0.4.0"
 description = "Empirical Neuroscience Knowledge Graph MCP Server — how conscious experience is expressed in biological substrate"
 readme = "README.md"
 license = "MIT"
@@ -27,7 +27,7 @@ dev = [
 ]
 
 [project.scripts]
-mcp-neo4j-biomechanisms = "mcp_neo4j_biomechanisms:main"
+kenning-soma = "kenning_soma:main"
 
 [tool.seal]
 publish = "pypi"
@@ -41,14 +41,14 @@ pythonpath = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/mcp_neo4j_biomechanisms"]
+packages = ["src/kenning_soma"]
 
 [tool.hatch.build.targets.sdist]
 # Default-deny: name what ships. An exclude list only ever omits what someone
 # thought of, and the sdist is built from the working tree — anything sitting
 # in the directory is a candidate for publication.
 include = [
-    "src/mcp_neo4j_biomechanisms",
+    "src/kenning_soma",
     "tests",
     "LICENSE",
     "README.md",

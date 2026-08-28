@@ -5,7 +5,7 @@ import logging
 
 from .utils import process_config
 
-logger = logging.getLogger("mcp_neo4j_biomechanisms")
+logger = logging.getLogger("kenning_soma")
 logger.setLevel(logging.INFO)
 
 

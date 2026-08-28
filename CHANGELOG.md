@@ -2,6 +2,22 @@
 
 All notable changes to this project are documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] — 2026-08-28
+
+The project is now **Kenning Soma**, joining Kenning Continuity and Kenning Encounter under a common identity. The graph, schema and tool surface are unchanged.
+
+### Changed — breaking
+
+- Distribution renamed `mcp-neo4j-biomechanisms` → `kenning-soma`. The old name keeps its existing releases on PyPI and receives no further ones.
+- Import package renamed `mcp_neo4j_biomechanisms` → `kenning_soma`.
+- Console entry point renamed `mcp-neo4j-biomechanisms` → `kenning-soma`; MCP client configs that launch the server by command name must be updated.
+- Docker image is now `kenningai/kenning-soma`.
+
+### Unchanged
+
+- No database migration. The fulltext index remains `biomechanisms_index`; all labels, relationship types and tool signatures are identical.
+- The domain vocabulary keeps *biomechanism* — `biomechanisms.py` and the `Neo4jBiomechanisms` class are named for what the graph models, not for what the tool is called.
+
 ## [0.3.0] — 2026-08-27
 
 ### Added

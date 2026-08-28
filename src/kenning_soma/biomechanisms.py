@@ -6,7 +6,7 @@ from neo4j import AsyncDriver, RoutingControl
 
 from .utils import load_cypher
 
-logger = logging.getLogger("mcp_neo4j_biomechanisms")
+logger = logging.getLogger("kenning_soma")
 logger.setLevel(logging.INFO)
 
 

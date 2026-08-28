@@ -1,6 +1,6 @@
 services:
   kg:
-    image: kenningai/mcp-neo4j-biomechanisms:0.3.0
+    image: kenningai/kenning-soma:0.4.0
     ports:
       - "8002:8000"
     environment:

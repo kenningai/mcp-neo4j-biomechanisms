@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  HOWTO: Using mcp-neo4j-biomechanisms correctly.
+  HOWTO: Using kenning-soma correctly.
 
   This document is for you — the LLM operating these tools. Not for a human
   developer. Not for a README. For the entity that will create nodes, draw
