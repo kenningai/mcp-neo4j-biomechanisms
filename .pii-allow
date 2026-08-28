@@ -1,0 +1,30 @@
+# PII-gate ruling for this repository.
+#
+# Format:  <key><TAB><reason>
+#   name entries   key = <relative path>:<matched string>   (pii-names.py)
+#   shape entries  key = <exact matched string>             (pii-shape.py)
+#
+# The name key is COMPOUND on purpose. An entry keyed on the name alone would
+# suppress that person everywhere, including in leaked prose — the hole this
+# gate exists to close. This says "this name, in this file, deliberately", and
+# nowhere else. An allowlist of exact facts closes behind itself.
+#
+# Every line needs a reason. A line with no reason is not a ruling, it is a
+# silencer. Ruled 2026-08-27 at v0.3.0, by reading every finding.
+#
+# There are no name entries: this repository names no people.
+
+# ── Shape findings: capitalized bigrams that are not people. The shape scanner
+# flags name-shaped pairs it cannot place; each of these is a product name, an
+# identifier, an anatomical term, or an example graph statement.
+
+Claude Desktop	product name — the stdio transport's example client, in README.md and packaging metadata
+Upgraded FastMCP	changelog bullet — sentence-initial verb followed by the library name
+The Cypher	query language name in a server docstring
+List Node Types	tool name — list_node_types, title-cased in a docstring
+List Relation Types	tool name — list_relation_types, title-cased in a docstring
+Raises ValueError	Python exception name in a docstring Raises: clause
+Enum Tests	test class heading in test_server.py
+The Entorhinal	anatomical term — "The Entorhinal-Hippocampal Gateway", an EdgeConfiguration example in HOWTO.xml
+The Fear Valence Circuit GENERATES	example graph statement in HOWTO.xml — EdgeConfiguration name plus relation type
+The Braak Staging Progression SUPPORTS Constitutive Relationality	example graph statement in HOWTO.xml — EmpiricalEvidence name, relation type, TheoreticalPrinciple name

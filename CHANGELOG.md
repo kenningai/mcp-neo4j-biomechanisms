@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented in this file. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] — 2026-08-27
+
+### Added
+
+- **MIT license.** `LICENSE` at the project root, `license = "MIT"` and `license-files = ["LICENSE"]` in `pyproject.toml` (PEP 639), and a License section in `README.md`. Built distributions now carry `License-Expression: MIT` and ship the license file in `dist-info/licenses/`. The build backend floor was raised to `hatchling>=1.27`, the first version supporting the PEP 639 fields.
+- `compose.yml` gains a second service exposing the upstream `mcp/neo4j-cypher` server on `:8004` against the same Neo4j instance, and sets `NEO4J_TELEMETRY: "false"` on both services.
+
+### Changed
+
+- `Dockerfile` and `compose.yml` version pins move to `0.3.0` alongside the package version; the compose image name follows the repository to the `kenningai` organisation.
+
 ## [0.2.0] — 2026-05-05
 
 ### Changed

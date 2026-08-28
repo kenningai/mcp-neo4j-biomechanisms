@@ -1,8 +1,10 @@
 [project]
 name = "mcp-neo4j-biomechanisms"
-version = "0.2.0"
+version = "0.3.0"
 description = "Empirical Neuroscience Knowledge Graph MCP Server — how conscious experience is expressed in biological substrate"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 dependencies = [
     "fastmcp>=3.0,<4",
@@ -12,7 +14,7 @@ dependencies = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
@@ -27,6 +29,12 @@ dev = [
 [project.scripts]
 mcp-neo4j-biomechanisms = "mcp_neo4j_biomechanisms:main"
 
+[tool.seal]
+publish = "pypi"
+test = [
+  "uv run pytest tests/unit",
+]
+
 [tool.pytest.ini_options]
 pythonpath = [
     "src"
@@ -34,3 +42,20 @@ pythonpath = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mcp_neo4j_biomechanisms"]
+
+[tool.hatch.build.targets.sdist]
+# Default-deny: name what ships. An exclude list only ever omits what someone
+# thought of, and the sdist is built from the working tree — anything sitting
+# in the directory is a candidate for publication.
+include = [
+    "src/mcp_neo4j_biomechanisms",
+    "tests",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md",
+    "HOWTO.xml",
+    "Dockerfile",
+    "compose.yml",
+    "pyproject.toml",
+    "uv.lock",
+]

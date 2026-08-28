@@ -112,3 +112,7 @@ Validation logic lives in `biomechanisms.py` and is fully tested without a datab
 ## Operating the graph
 
 `HOWTO.xml` is an LLM-facing operations manual for the entity *using* these tools — what node-type goes where, when to draw which edge, when to add a `TheoreticalPrinciple` versus extend an `EmpiricalEvidence`, why GDS is constitutive rather than decorative. Read it before populating the graph.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
